@@ -15,6 +15,7 @@ Written by Limor Fried/Ladyada  for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 
+84x48 individual pixels
 
  * Pin 1 (VDD) -> +3.3V (rightmost, when facing the display head-on)
  * Pin 2 (SCLK)-> Arduino digital pin 3
@@ -64,7 +65,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(3, 4, 5, 7, 6);
 #define XPOS 0
 #define YPOS 1
 #define DELTAY 2
-
+float mynum = 200;
 
 #define LOGO16_GLCD_HEIGHT 16
 #define LOGO16_GLCD_WIDTH  16
@@ -145,9 +146,9 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
       icons[f][YPOS] += icons[f][DELTAY];
       // if its gone, reinit
       if (icons[f][YPOS] > display.height()) {
-	icons[f][XPOS] = random(display.width());
-	icons[f][YPOS] = 0;
-	icons[f][DELTAY] = random(5) + 1;
+  icons[f][XPOS] = random(display.width());
+  icons[f][YPOS] = 0;
+  icons[f][DELTAY] = random(5) + 1;
       }
     }
    }
@@ -289,108 +290,34 @@ void setup()   {
   delay(2000);
   display.clearDisplay();   // clears the screen and buffer
 
-  // draw a single pixel
-  display.drawPixel(10, 10, BLACK);
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw many lines
-  testdrawline();
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw rectangles
-  testdrawrect();
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw multiple rectangles
-  testfillrect();
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw mulitple circles
-  testdrawcircle();
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw a circle, 10 pixel radius
-  display.fillCircle(display.width()/2, display.height()/2, 10, BLACK);
-  display.display();
-  delay(2000);
-  display.clearDisplay();
-
-  testdrawroundrect();
-  delay(2000);
-  display.clearDisplay();
-
-  testfillroundrect();
-  delay(2000);
-  display.clearDisplay();
-
-  testdrawtriangle();
-  delay(2000);
-  display.clearDisplay();
-   
-  testfilltriangle();
-  delay(2000);
-  display.clearDisplay();
-
-  // draw the first ~12 characters in the font
-  testdrawchar();
-  display.display();
-  delay(2000);
-  display.clearDisplay();
 
   // text display tests
-  display.setTextSize(1);
+  display.setTextSize(4);
   display.setTextColor(BLACK);
   display.setCursor(0,0);
-  display.println("Hello, world!");
-  display.setTextColor(WHITE, BLACK); // 'inverted' text
-  display.println(3.141592);
-  display.setTextSize(2);
-  display.setTextColor(BLACK);
-  display.print("0x"); display.println(0xDEADBEEF, HEX);
-  display.display();
-  delay(2000);
-
-  // rotation example
-  display.clearDisplay();
-  display.setRotation(1);  // rotate 90 degrees counter clockwise, can also use values of 2 and 3 to go further.
+  display.print("199");
   display.setTextSize(1);
-  display.setTextColor(BLACK);
-  display.setCursor(0,0);
-  display.println("Rotation");
-  display.setTextSize(2);
-  display.println("Example!");
+  display.println(".9");
+  display.setCursor(72,36);
+  display.println("kg");
   display.display();
   delay(2000);
-
-  // revert back to no rotation
-  display.setRotation(0);
-
-  // miniature bitmap display
   display.clearDisplay();
-  display.drawBitmap(30, 16,  logo16_glcd_bmp, 16, 16, 1);
-  display.display();
 
-  // invert the display
-  display.invertDisplay(true);
-  delay(1000); 
-  display.invertDisplay(false);
-  delay(1000); 
-
-  // draw a bitmap icon and 'animate' movement
-  testdrawbitmap(logo16_glcd_bmp, LOGO16_GLCD_WIDTH, LOGO16_GLCD_HEIGHT);
 }
 
 
 void loop() {
-  
+    for (int i=0; i<mynum; i++) {
+    display.setTextSize(4);
+  display.setTextColor(BLACK);
+  display.setCursor(0,0);
+  display.print(i);
+  display.setTextSize(1);
+  display.setCursor(72,36);
+  display.println("kg");
+  display.display();
+  delay(200);
+  display.clearDisplay();
+}
 }
