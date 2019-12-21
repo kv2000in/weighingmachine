@@ -6,10 +6,15 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXFileReference section */
+		2A518EE923ADD98000E620F2 /* weighingmachine */ = {isa = PBXFileReference; lastKnownFileType = folder; path = weighingmachine; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		2A518EE223ADD95800E620F2 = {
 			isa = PBXGroup;
 			children = (
+				2A518EE923ADD98000E620F2 /* weighingmachine */,
 			);
 			sourceTree = "<group>";
 		};
