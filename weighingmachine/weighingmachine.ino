@@ -41,7 +41,8 @@ All text above, and the splash screen must be included in any redistribution
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
-
+//#include <Fonts/FreeMonoBold24pt7b.h> //too big for nokia display even with text size 1
+#include <Fonts/FreeMono9pt7b.h>
 // Software SPI (slower updates, more flexible pin options):
 // pin 7 - Serial clock out (SCLK)
 // pin 6 - Serial data out (DIN)
@@ -292,13 +293,14 @@ void setup()   {
 
 
   // text display tests
-  display.setTextSize(4);
+  display.setTextSize(1);
+  display.setFont(&FreeMono9pt7b);
   display.setTextColor(BLACK);
-  display.setCursor(0,0);
+  display.setCursor(0,20);
   display.print("199");
   display.setTextSize(1);
   display.println(".9");
-  display.setCursor(72,36);
+  display.setCursor(52,36);
   display.println("kg");
   display.display();
   delay(2000);
@@ -309,12 +311,13 @@ void setup()   {
 
 void loop() {
     for (int i=0; i<mynum; i++) {
-    display.setTextSize(4);
+  //display.setFont(); to reset back to default font
+  display.setTextSize(2);
   display.setTextColor(BLACK);
-  display.setCursor(0,0);
+  display.setCursor(0,30);
   display.print(i);
   display.setTextSize(1);
-  display.setCursor(72,36);
+  display.setCursor(58,40);
   display.println("kg");
   display.display();
   delay(200);
