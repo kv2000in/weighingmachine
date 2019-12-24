@@ -37,7 +37,7 @@ All text above, and the splash screen must be included in any redistribution
  *   7      Vout output of display-internal dc/dc converter
  * 
 *********************************************************************/
-
+#include "HX711.h"
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
@@ -67,7 +67,11 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(3, 4, 5, 7, 6);
 #define YPOS 1
 #define DELTAY 2
 float mynum = 200;
+// HX711 circuit wiring
+const int LOADCELL_DOUT_PIN = 9;
+const int LOADCELL_SCK_PIN = 10;
 
+HX711 scale;
 #define LOGO16_GLCD_HEIGHT 16
 #define LOGO16_GLCD_WIDTH  16
 
@@ -279,7 +283,7 @@ void testdrawline() {
 
 void setup()   {
   Serial.begin(9600);
-
+  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   display.begin();
   // init done
 
@@ -310,22 +314,28 @@ void setup()   {
 
 
 void loop() {
-    for (int i=0; i<mynum; i++) {
+
+   if (scale.is_ready()) {
+
+    display.clearDisplay();
+    long reading = scale.read();
+    //Serial.print("HX711 reading: ");
+    //Serial.println(reading);
+    //for (int i=0; i<mynum; i++) {
   //display.setFont(); to reset back to default font
   display.setFont(&FreeSansBold12pt7b);
   display.setTextSize(2);
   display.setTextColor(BLACK);
   display.setCursor(0,32);
-  display.print(i);
-  display.setFont();
-  display.setCursor(10,40);
-  display.setTextSize(1);
-  display.print(".9");
-  display.setTextSize(1);
-  display.setCursor(66,40);
-  display.println("lbs");
+  display.print(reading);
   display.display();
-  delay(200);
-  display.clearDisplay();
-}
+  
+  //display.clearDisplay();
+//}
+  } else {
+  display.setCursor(0,32);
+  display.print("XXX");
+  display.display();
+  }
+  delay(2000);
 }
