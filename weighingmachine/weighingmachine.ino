@@ -70,9 +70,13 @@ Adjust the parameter in step 4 until you get an accurate reading.
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_PCD8544.h>
+#include <avr/sleep.h>
+#include <avr/power.h>
+#include <avr/wdt.h>
 //#include <Fonts/FreeMonoBold24pt7b.h> //too big for nokia display even with text size 1
 #include <Fonts/FreeSansBold12pt7b.h>
 Adafruit_PCD8544 display = Adafruit_PCD8544(3, 4, 6, 7, 5); //Hardwired this way - don't change
+int myVersion = 1;
 const int LED_BACKLIGHT_PIN =  8; //Hardwired via a transistor in order to run on supply voltage rather than on regulated 3.3 V.
 // HX711 circuit wiring
 const int LOADCELL_DOUT_PIN = 9; //Hardwired
@@ -83,37 +87,86 @@ const int SWITCH_DOWN_PIN = 11;
 const int SWITCH_SET_PIN = 12;
 const int SWITCH_UP_PIN = 13;
 int light_level =0;
+unsigned long previousMillis = 0;     
+const long interval = 15000; 
+volatile boolean awake=true;
 HX711 scale;
 
+void enterSleep(void)
+{
+  attachInterrupt(0, pin2Interrupt, LOW);
+  delay(100);
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);   /* EDIT: could also use SLEEP_MODE_PWR_DOWN for lowest power consumption. */
+  scale.power_down();
+  sleep_enable();
+  digitalWrite(LED_BACKLIGHT_PIN, LOW);
+  display.clearDisplay();   //write 0 to shadow buffer
+  display.display();        // copy buffer to display memory
+  display.command( PCD8544_FUNCTIONSET | PCD8544_POWERDOWN);
+  awake=false;
+  /* Now enter sleep mode. */
+  sleep_mode();
+  
+  /* The program will continue from here after the WDT timeout*/
+  sleep_disable(); /* First thing to do is disable sleep. */
+  
+  /* Re-enable the peripherals. */
+  power_all_enable();
+  scale.power_up();
+  display.initDisplay();
+  previousMillis = millis();
+  Serial.println("awake now");
+}
 
+void pin2Interrupt(void)
+{
+  /* This will bring us back from sleep. */
+  
+  /* We detach the interrupt to stop it from 
+   * continuously firing while the interrupt pin
+   * is low.
+   */
+  detachInterrupt(0);
+  awake=true;
+  
+}
+void backlightcontrol(){
+  light_level = analogRead(LIGHT_LEVEL_PIN);
+  if (light_level<512){
+    digitalWrite(LED_BACKLIGHT_PIN, HIGH);}
+    else
+    {
+      digitalWrite(LED_BACKLIGHT_PIN, LOW);
+      }
+}
 void setup()   {
   Serial.begin(9600);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  pinMode(LED_BACKLIGHT_PIN, OUTPUT);
-  digitalWrite(LED_BACKLIGHT_PIN, LOW);
-  delay(5000);
-  digitalWrite(LED_BACKLIGHT_PIN, HIGH);
-  display.begin();
-  Serial.println("Serial Test");
-  // init done
-
-  // you can change the contrast around to adapt the display
-  // for the best viewing!
-  display.setContrast(65);
-
-  display.display(); // show splashscreen
-  delay(2000);
-  display.clearDisplay();   // clears the screen and buffer
-  digitalWrite(LED_BACKLIGHT_PIN, LOW);
   scale.set_scale(554.f);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
-  scale.tare();  
+  scale.tare(); 
   
+  pinMode(LED_BACKLIGHT_PIN, OUTPUT);
+  pinMode(SWITCH_UNIT_PIN, INPUT_PULLUP);
+  
+  
+  display.begin();
+  display.clearDisplay();
+  display.setContrast(65);
+  display.setTextSize(2);
+  display.setTextColor(BLACK);
+  display.setCursor(0,0);
+  display.print("Ver =");
+  display.println(myVersion);
+  display.println("POST");
+  display.display();
+  
+  Serial.println("All good in setup");
 
 }
 
 
 void loop() {
-    light_level = analogRead(LIGHT_LEVEL_PIN);
+/*   
    if (scale.is_ready()) {
 
     display.clearDisplay();
@@ -134,9 +187,35 @@ void loop() {
 //}
   } else {
   display.setCursor(0,32);
-  display.print(light_level);
+  
+  //display.print(light_level);
   display.display();
   
   }
   delay(5000);
+
+  
+
+*/
+
+unsigned long currentMillis = millis();
+
+  if (currentMillis - previousMillis >= interval) {
+     previousMillis = currentMillis;
+      Serial.println("Entering Sleep");
+      enterSleep();
+  }
+   else{
+    backlightcontrol();
+  display.setTextSize(2);
+  display.setTextColor(BLACK);
+  display.setCursor(0,0);
+  display.print("Ver =");
+  display.println(myVersion);
+  display.display();
+    //weigh();
+   // showWeight();
+    //HandleMenu();
+    }
+
 }
