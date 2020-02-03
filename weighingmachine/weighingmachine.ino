@@ -93,9 +93,10 @@ const int SWITCH_SET_PIN = 12;  // Pin Change Interrupt Request 0 (pins D8 to D1
 const int SWITCH_UP_PIN = 13;   // Pin Change Interrupt Request 0 (pins D8 to D13) (PCINT0_vect)
 int light_level =0;
 int cutoffLightLevel = 512;
+boolean unitoptionlbs = true; // false = Kg, true = lbs
 
 unsigned long previousMillis = 0;     
-const long timeoutinterval = 15000; 
+long timeoutinterval = 15000; 
 
 unsigned long DisplaypreviousMillis = 0;
 const long DisplayRefreshRate= 100;
@@ -111,14 +112,6 @@ int contrast=65;
 
 int menuitem = 1;
 int page = 1;
-
-int SETbuttonState = 0;
-int UPbuttonState = 0;  
-int DOWNbuttonState = 0;
-
-int lastSETbuttonState=0;          
-int lastUPbuttonState = 0;
-int lastDOWNbuttonState = 0;
 
 HX711 scale;
 
@@ -148,40 +141,73 @@ void enterSleep(void)
   previousMillis = millis();
   Serial.println("awake now");
 }
-//ISR (PCINT2_vect)
-// {
-//  //Serial.println(PCMSK0,BIN);
-// } 
+
 
 void UNITpinInterrupt(void)
 {
-  /* This will bring us back from sleep. */
-  
-  /* We detach the interrupt to stop it from 
-   * continuously firing while the interrupt pin
-   * is low.
-   */
-  //detachInterrupt(0);
-  detachInterrupt (digitalPinToInterrupt (SWITCH_UNIT_PIN));
+
+ static unsigned long last_interrupt_time = 0;
+ unsigned long interrupt_time = millis();
+ // If interrupts come faster than 200ms, assume it's a bounce and ignore
+ if (interrupt_time - last_interrupt_time > 200)
+ {
+     detachInterrupt (digitalPinToInterrupt (SWITCH_UNIT_PIN));
   UNIT=true;
+
+ }
+ last_interrupt_time = interrupt_time;
+
+  
   
 }
 void SETpinInterrupt(void)
 {
+   static unsigned long last_interrupt_time = 0;
+ unsigned long interrupt_time = millis();
+ // If interrupts come faster than 200ms, assume it's a bounce and ignore
+ if (interrupt_time - last_interrupt_time > 200)
+ {
+
   SET=true;
   detachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_SET_PIN));
+
+ }
+ last_interrupt_time = interrupt_time;
+
+  
   
 }
 void UPpinInterrupt(void)
 {
+
+     static unsigned long last_interrupt_time = 0;
+ unsigned long interrupt_time = millis();
+ // If interrupts come faster than 200ms, assume it's a bounce and ignore
+ if (interrupt_time - last_interrupt_time > 200)
+ {
+
   UP=true;
   detachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN));
+
+ }
+ last_interrupt_time = interrupt_time;
+
   
 }
 void DOWNpinInterrupt(void)
 {
+     static unsigned long last_interrupt_time = 0;
+ unsigned long interrupt_time = millis();
+ // If interrupts come faster than 200ms, assume it's a bounce and ignore
+ if (interrupt_time - last_interrupt_time > 200)
+ {
+
   DOWN=true;
   detachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN));
+
+ }
+ last_interrupt_time = interrupt_time;
+
   
   
 }
@@ -198,76 +224,180 @@ void backlightcontrol(){
 
 
   void handleMenu(){
-//  DOWNbuttonState = digitalRead(SWITCH_DOWN_PIN);
-//  SETbuttonState = digitalRead(SWITCH_SET_PIN);
-//  UPbuttonState =   digitalRead(SWITCH_UP_PIN);
- 
-//  checkIfDOWNbuttonIsPressed();
-//  checkIfUPbuttonIsPressed();
-//  checkIfSETbuttonIsPressed();
-  //
 
-  if ((UP || DOWN || SET) == true){
-    previousMillis = millis();
+
+
+/*
+Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
+                   Menu Item 2 = Unit, Page 3 = Unit options
+                   Menu Item 3 = Light cutoff level, Page 4 = Light Cutoff Value
+                   Menu Item 4 = Timeout , Page 5 = timeout value
+                   Menu Item 5 = Reset Defaults - will be on Page 6
+                   Menu Item 6 = Exit Menu - will be on Page 6
+                   
+*/
+    if ((UP || DOWN) == true){
+    previousMillis = millis(); // Reset the sleep timer
+    isNavigatingMenu = true; //Draw Menu
     }
-
+  
   if ((UP) && (page == 1 )) {
     UP = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
     menuitem--;
     if (menuitem==0)
     {
-      menuitem=3;
+      menuitem=6;
+    }
+    if (menuitem>3)
+    {
+        page=6;    
     }      
-  }else if ((UP) && (page == 2 )) {
+  }
+ else if ((UP) && (page == 6 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==0)
+    {
+      menuitem=6;
+    }
+    if (menuitem<4)
+    {
+        page=1;    
+    }      
+  }
+  
+  else if ((UP) && (page == 2 )) {
     UP = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
     contrast--;
     setContrast();
+  }
+  else if ((UP) && (page == 3 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    unitoptionlbs =!unitoptionlbs;
+  }
+  else if ((UP) && (page == 4 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    cutoffLightLevel--;
+  }
+   else if ((UP) && (page == 5 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    timeoutinterval = timeoutinterval-1000;
   }
   if ((DOWN) && (page == 1)) {
     DOWN = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
 
     menuitem++;
-    if (menuitem==4) 
+    if (menuitem==7) 
     {
       menuitem=1;
-    }      
-  }else if ((DOWN) && (page == 2 )) {
+    }
+    if (menuitem>3)
+    {
+        page=6;    
+    }
+  }
+   else if ((DOWN) && (page == 6)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==7) 
+    {
+      menuitem=1;
+    }
+    if (menuitem<4)
+    {
+        page=1;    
+    }
+  }
+  else if ((DOWN) && (page == 2 )) {
     DOWN = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
     contrast++;
     setContrast();
   }
+    else if ((DOWN) && (page == 3 )) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+    unitoptionlbs =!unitoptionlbs;
+  }
+  else if ((DOWN) && (page == 4 )) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+    cutoffLightLevel++;
+  }
+  else if ((DOWN) && (page == 5 )) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+    timeoutinterval = timeoutinterval+1000;
+  }
   if (SET) {
     SET = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_SET_PIN), SETpinInterrupt, FALLING);
-    
+
+    if(isNavigatingMenu){
+      
+   
     if (page == 1 && menuitem==2) 
     {
-
+      page=3;
     }
-    if(page == 1 && menuitem ==3)
+    else if(page == 1 && menuitem ==3)
+    {
+      page=4;
+    }
+    else if (page == 1 && menuitem==1) 
+    {
+      page=2;
+    }
+    else if (page == 6 && menuitem==4) 
+    {
+      page=5;
+    }
+    else if (page == 5) 
+    {
+      page=6;
+    }
+    else if (menuitem==5) 
     {
       resetDefaults();
-    }
-else if (page == 1 && menuitem==1) {
-      page=2;
      }
-else if (page == 2) {
+    else if (menuitem==6) 
+    {
+      isNavigatingMenu = false;
+      display.clearDisplay();
+      display.display();
+      page=1;
+      menuitem =1;
+      return;
+     } 
+    else if ((page == 2)|(page == 3)|(page ==4)) 
+    {
       page=1;
      }
+     
    }
-   
+  isNavigatingMenu = true;
+  previousMillis = millis(); // Reset the sleep timer
+  }
+
+
   }
 
 
   void drawMenu()
   {
-    
+   display.setFont();  
   if (page==1) 
-  {    
+  {  
+     
     display.setTextSize(1);
     display.clearDisplay();
     display.setTextColor(BLACK, WHITE);
@@ -295,7 +425,7 @@ else if (page == 2) {
     {
       display.setTextColor(BLACK, WHITE);
     }    
-    display.print(">Unit: ");
+    display.print(">Unit ");
     
 
     
@@ -308,7 +438,7 @@ else if (page == 2) {
       display.setTextColor(BLACK, WHITE);
     }  
     display.setCursor(0, 35);
-    display.print(">Reset");
+    display.print(">Light Cutoff");
     display.display();
   }
     
@@ -327,18 +457,120 @@ else if (page == 2) {
     display.setTextSize(2);
     display.setCursor(5, 25);
     display.print(contrast);
- 
     display.setTextSize(2);
     display.display();
   }
-  
+    else if (page==3) 
+  {
+    
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("UNIT");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(5, 15);
+    display.print("Value");
+    display.setTextSize(2);
+    display.setCursor(5, 25);
+    if (unitoptionlbs){
+    display.print("lbs");
+    }
+    else {
+      display.print("Kgs");
+      }
+    display.setTextSize(2);
+    display.display();
+  }
+    else if (page==4) 
+  {
+    
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Light Cutoff");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(5, 15);
+    display.print("Value");
+    display.setTextSize(2);
+    display.setCursor(5, 25);
+    display.print(cutoffLightLevel);
+    display.setTextSize(2);
+    display.display();
+  }
+     else if (page==5) 
+  {
+    
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Timeout");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(5, 15);
+    display.print("m Secs");
+    display.setTextSize(2);
+    display.setCursor(5, 25);
+    display.print(timeoutinterval);
+    display.setTextSize(2);
+    display.display();
   }
 
- void resetDefaults()
-  {
-    contrast = 65;
-    setContrast();
+  else if (page==6) 
+  {    
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("MAIN MENU");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==4) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">TimeOut");
+    display.setCursor(0, 25);
+   
+    if (menuitem==5) 
+    {
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }    
+    display.print(">Reset ");
+    
+
+    
+    if (menuitem==6) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }  
+    display.setCursor(0, 35);
+    display.print(">Exit");
+    display.display();
   }
+  }
+
+  void resetDefaults()
+  {
+    cutoffLightLevel = 512;
+    contrast = 65;
+    timeoutinterval = 15000;
+    
+    } 
   void setContrast()
   {
     display.setContrast(contrast);
@@ -347,7 +579,7 @@ else if (page == 2) {
 void setup()   {
   Serial.begin(9600);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  scale.set_scale(554.f);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
+  scale.set_scale(211.8);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
   scale.tare(); 
   
   pinMode(LED_BACKLIGHT_PIN, OUTPUT);
@@ -420,18 +652,55 @@ unsigned long currentMillis = millis();
   }
    else{
     backlightcontrol();
-//  if (currentMillis - DisplaypreviousMillis >= DisplayRefreshRate) {
-//     DisplaypreviousMillis = currentMillis;
-//     drawMenu();
-//  }
-    //weigh();
-   // showWeight();
   handleMenu();
-    
-
+  if(isNavigatingMenu){
+ 
   drawMenu();
+  }
+  else{
+  if (scale.is_ready()) {
 
-
+  display.clearDisplay();
+  float reading = scale.get_units(10);
+  float readinginKGs = round(reading*10); //9999
+  float readinginLBs = round((readinginKGs/2.2));// 4545
+  
+  if (unitoptionlbs){
+  int leftofdecimal = (int) readinginLBs/10; //454.5
+  int rightofdecimal = readinginLBs-(leftofdecimal*10); 
+  display.setFont(&FreeSansBold12pt7b);
+  display.setTextSize(2);
+  display.setTextColor(BLACK);
+  display.setCursor(0,32);
+  display.print(leftofdecimal);
+  display.setFont();
+  display.setTextSize(1);
+  display.setCursor(48,39);
+  display.print(".");
+  display.print(rightofdecimal);
+  display.setCursor(6,39);
+    display.print("lbs");
+    }
+    else {
+  int leftofdecimal = (int) readinginKGs/10; 
+  int rightofdecimal = readinginKGs-(leftofdecimal*10);
+  display.setFont(&FreeSansBold12pt7b);
+  display.setTextSize(2);
+  display.setTextColor(BLACK);
+  display.setCursor(0,32);
+  display.print(leftofdecimal);
+  display.setFont();
+  display.setTextSize(1);
+  display.setCursor(48,39);
+  display.print(".");
+  display.print(rightofdecimal);
+  display.setCursor(6,39);
+      display.print("Kgs");
+      }
+  display.display();
+    }
+  
+  }
 
 
   
