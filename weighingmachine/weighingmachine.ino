@@ -93,10 +93,10 @@ const int SWITCH_SET_PIN = 12;  // Pin Change Interrupt Request 0 (pins D8 to D1
 const int SWITCH_UP_PIN = 13;   // Pin Change Interrupt Request 0 (pins D8 to D13) (PCINT0_vect)
 int light_level =0;
 int cutoffLightLevel = 512;
-boolean unitoptionlbs = true; // false = Kg, true = lbs
+boolean unitoptionlbs = false; // false = Kg, true = lbs
 
 unsigned long previousMillis = 0;     
-long timeoutinterval = 15000; 
+long timeoutinterval = 150000; 
 
 unsigned long DisplaypreviousMillis = 0;
 const long DisplayRefreshRate= 100;
@@ -568,7 +568,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
   {
     cutoffLightLevel = 512;
     contrast = 65;
-    timeoutinterval = 15000;
+    timeoutinterval = 150000;
     
     } 
   void setContrast()
@@ -579,7 +579,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
 void setup()   {
   Serial.begin(9600);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  scale.set_scale(211.8);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
+  scale.set_scale(211.8*5);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
   scale.tare(); 
   
   pinMode(LED_BACKLIGHT_PIN, OUTPUT);
@@ -662,8 +662,8 @@ unsigned long currentMillis = millis();
 
   display.clearDisplay();
   float reading = scale.get_units(10);
-  float readinginKGs = round(reading*10); //9999
-  float readinginLBs = round((readinginKGs/2.2));// 4545
+  float readinginKGs = round(reading/2); 
+  float readinginLBs = round((readinginKGs*2.2));// 4545
   
   if (unitoptionlbs){
   int leftofdecimal = (int) readinginLBs/10; //454.5
