@@ -566,10 +566,12 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
 
   void resetDefaults()
   {
+    delayMicroseconds(1000000); // Let the user remove button pressing finger to get correct tare
     cutoffLightLevel = 512;
     contrast = 65;
     timeoutinterval = 150000;
-    
+    delayMicroseconds(4000000);
+    scale.tare(); //Re-zero the scale;
     } 
   void setContrast()
   {
@@ -579,7 +581,8 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
 void setup()   {
   Serial.begin(9600);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  scale.set_scale(211.8*5);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
+  //scale.set_scale(211.8*10.7);                      // this value is obtained by calibrating the scale with known weights; see above and the https://github.com/bogde/HX711 README for details
+  scale.set_scale(226.626); 
   scale.tare(); 
   
   pinMode(LED_BACKLIGHT_PIN, OUTPUT);
@@ -661,13 +664,18 @@ unsigned long currentMillis = millis();
   if (scale.is_ready()) {
 
   display.clearDisplay();
-  float reading = scale.get_units(10);
-  float readinginKGs = round(reading/2); 
-  float readinginLBs = round((readinginKGs*2.2));// 4545
-  
+  float reading = scale.get_units(10); //With scale.set_scale(226.626) - this gives accurate up to 1 deca gram (10 grams). 500 gram water bottle values are 50.07 to 50.32
+  float readinginGs = reading*10;
+  //float readinginKGs = round(readinginGs/1000); 
+  float readinginLBs = readinginGs/453.592;// 4545
+ //Serial.print("reading in lbs= ");
+ //Serial.println(readinginLBs);
   if (unitoptionlbs){
-  int leftofdecimal = (int) readinginLBs/10; //454.5
-  int rightofdecimal = readinginLBs-(leftofdecimal*10); 
+  int intermediatevalueholder = (int) (round(readinginLBs*10)); //155.83 becomes  1558 
+  int leftofdecimal = intermediatevalueholder/10; //1558 becomes 155
+ // Serial.println(leftofdecimal);
+  int rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
+  // Serial.println(rightofdecimal);
   display.setFont(&FreeSansBold12pt7b);
   display.setTextSize(2);
   display.setTextColor(BLACK);
@@ -682,8 +690,11 @@ unsigned long currentMillis = millis();
     display.print("lbs");
     }
     else {
-  int leftofdecimal = (int) readinginKGs/10; 
-  int rightofdecimal = readinginKGs-(leftofdecimal*10);
+  int intermediatevalueholder = (int) (round(readinginGs/100)); //70992.87 becomes  710
+  int leftofdecimal = intermediatevalueholder/10; //71
+  //Serial.println(leftofdecimal);
+  int rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
+  //Serial.println(rightofdecimal);
   display.setFont(&FreeSansBold12pt7b);
   display.setTextSize(2);
   display.setTextColor(BLACK);
