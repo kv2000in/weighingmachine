@@ -8,12 +8,14 @@
 
 /* Begin PBXFileReference section */
 		2A518EE923ADD98000E620F2 /* weighingmachine */ = {isa = PBXFileReference; lastKnownFileType = folder; path = weighingmachine; sourceTree = "<group>"; };
+		2A8812D82FEE1C8E008F5074 /* MenuLayout */ = {isa = PBXFileReference; lastKnownFileType = text; path = MenuLayout; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		2A518EE223ADD95800E620F2 = {
 			isa = PBXGroup;
 			children = (
+				2A8812D82FEE1C8E008F5074 /* MenuLayout */,
 				2A518EE923ADD98000E620F2 /* weighingmachine */,
 			);
 			sourceTree = "<group>";

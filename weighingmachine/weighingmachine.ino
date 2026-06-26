@@ -93,6 +93,7 @@ const int SWITCH_SET_PIN = 12;  // Pin Change Interrupt Request 0 (pins D8 to D1
 const int SWITCH_UP_PIN = 13;   // Pin Change Interrupt Request 0 (pins D8 to D13) (PCINT0_vect)
 int light_level =0;
 int cutoffLightLevel = 512;
+float gravityMultiplier = 1.0;
 boolean unitoptionlbs = false; // false = Kg, true = lbs
 
 unsigned long previousMillis = 0;     
@@ -247,12 +248,16 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     menuitem--;
     if (menuitem==0)
     {
-      menuitem=6;
+      menuitem=7;
     }
     if (menuitem>3)
     {
         page=6;    
-    }      
+    }   
+    if (menuitem>6)
+    {
+        page=7;    
+    }   
   }
  else if ((UP) && (page == 6 )) {
     UP = false;
@@ -260,13 +265,126 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     menuitem--;
     if (menuitem==0)
     {
-      menuitem=6;
+      menuitem=7;
     }
     if (menuitem<4)
     {
         page=1;    
+    } 
+        if (menuitem>6)
+    {
+        page=7;    
     }      
   }
+
+
+   else if ((UP) && (page == 7 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==0)
+    {
+      menuitem=7;
+    }
+    if (menuitem<4)
+    {
+        page=1;    
+    } 
+        if (3<menuitem<7)
+    {
+        page=6;    
+    }      
+  }
+
+     else if ((UP) && (page == 8 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==7)
+    {
+      menuitem=18;
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }     
+  }
+
+
+       else if ((UP) && (page == 9 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==7)
+    {
+      menuitem=18;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }   
+  }
+
+         else if ((UP) && (page == 10 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==7)
+    {
+      menuitem=18;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }   
+  }
+
+           else if ((UP) && (page == 11 )) {
+    UP = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_UP_PIN), UPpinInterrupt, FALLING);
+    menuitem--;
+    if (menuitem==7)
+    {
+      menuitem=18;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }   
+  }
+  
   
   else if ((UP) && (page == 2 )) {
     UP = false;
@@ -294,21 +412,26 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
 
     menuitem++;
-    if (menuitem==7) 
+    if (menuitem==8) 
     {
       menuitem=1;
     }
-    if (menuitem>3)
+    if (7>menuitem>3)
     {
         page=6;    
     }
+        if (menuitem>6)
+    {
+        page=7;    
+    }
+    
   }
    else if ((DOWN) && (page == 6)) {
     DOWN = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
 
     menuitem++;
-    if (menuitem==7) 
+    if (menuitem==8) 
     {
       menuitem=1;
     }
@@ -316,7 +439,127 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
         page=1;    
     }
+    if (menuitem>6)
+    {
+        page=7;    
+    }
   }
+
+   else if ((DOWN) && (page == 7)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==8) 
+    {
+      menuitem=1;
+    }
+    if (menuitem<4)
+    {
+        page=1;    
+    }
+    if (3<menuitem<7)
+    {
+        page=6;    
+    }
+  }
+
+     else if ((DOWN) && (page == 8)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==19) 
+    {
+      menuitem=8;
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }
+  }
+
+
+   else if ((DOWN) && (page == 9)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==19) 
+    {
+      menuitem=8;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }
+  }
+
+
+     else if ((DOWN) && (page == 10)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==19) 
+    {
+      menuitem=8;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+        if (16<menuitem<19)
+    {
+        page=11;    
+    }
+  }
+
+       else if ((DOWN) && (page == 11)) {
+    DOWN = false;
+    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
+
+    menuitem++;
+    if (menuitem==19) 
+    {
+      menuitem=8;
+    }
+    if (11>menuitem>7)
+    {
+        page=8;    
+    }
+    if (14>menuitem>10)
+    {
+        page=9;    
+    }
+    if (13<menuitem<17)
+    {
+        page=10;    
+    }
+  }
+
+  
+  
   else if ((DOWN) && (page == 2 )) {
     DOWN = false;
     attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(SWITCH_DOWN_PIN), DOWNpinInterrupt, FALLING);
@@ -377,12 +620,80 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
       page=1;
       menuitem =1;
       return;
-     } 
+     }
+     else if (menuitem==7)
+     {
+      page = 8;
+      }
+     else if (menuitem=8) //Earth
+     {
+      gravityMultiplier=1.0;
+      page = 7;
+      }  
+
+     else if (menuitem=9) //Sun
+     {
+      gravityMultiplier=27.01;
+      page = 7;
+      }  
+
+     else if (menuitem=10) //Moon
+     {
+      gravityMultiplier=0.166;
+      page = 7;
+      } 
+
+     else if (menuitem=11) //Mercury
+     {
+      gravityMultiplier=0.378;
+      page = 7;
+      }   
+
+     else if (menuitem=12) //Venus
+     {
+      gravityMultiplier=0.91;
+      page = 7;
+      }  
+
+      else if (menuitem=13) //Mars
+     {
+      gravityMultiplier=0.377;
+      page = 7;
+      } 
+
+     else if (menuitem=14) //Jupiter
+     {
+      gravityMultiplier=2.34;
+      page = 7;
+      } 
+     else if (menuitem=15) //Saturn
+     {
+      gravityMultiplier=1.06;
+      page = 7;
+      } 
+     else if (menuitem=16) //Uranus
+     {
+      gravityMultiplier=0.92;
+      page = 7;
+      } 
+
+     else if (menuitem=17) //Neptune
+     {
+      gravityMultiplier=1.19;
+      page = 7;
+      } 
+
+     else if (menuitem=18)//Pluto
+     {
+      gravityMultiplier=0.06;
+      page = 7;
+      } 
     else if ((page == 2)|(page == 3)|(page ==4)) 
     {
       page=1;
      }
-     
+
+
    }
   isNavigatingMenu = true;
   previousMillis = millis(); // Reset the sleep timer
@@ -562,6 +873,219 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     display.print(">Exit");
     display.display();
   }
+
+
+    if (page==7) 
+  {  
+     
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("MAIN MENU");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==7) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">Gravity");
+    display.setCursor(0, 25);
+   
+  }
+
+
+    if (page==8) 
+  {  
+     
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Gravity");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==8) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">Earth");
+    display.setCursor(0, 25);
+   
+    if (menuitem==9) 
+    {
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }    
+    display.print(">Sun ");
+    
+    
+
+    
+    if (menuitem==10) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }  
+    display.setCursor(0, 35);
+    display.print(">Moon");
+    display.display();
+  }
+
+
+
+
+
+    if (page==9) 
+  {  
+     
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Gravity");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==11) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">Mercury");
+    display.setCursor(0, 25);
+   
+    if (menuitem==12) 
+    {
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }    
+    display.print(">Venus ");
+    
+
+    
+    if (menuitem==13) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }  
+    display.setCursor(0, 35);
+    display.print(">Mars");
+    display.display();
+  }
+
+
+      if (page==10) 
+  {  
+     
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Gravity");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==14) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">Jupiter");
+    display.setCursor(0, 25);
+   
+    if (menuitem==15) 
+    {
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }    
+    display.print(">Saturn ");
+    
+
+    
+    if (menuitem==16) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }  
+    display.setCursor(0, 35);
+    display.print(">Uranus");
+    display.display();
+  }
+
+
+
+      if (page==11) 
+  {  
+     
+    display.setTextSize(1);
+    display.clearDisplay();
+    display.setTextColor(BLACK, WHITE);
+    display.setCursor(15, 0);
+    display.print("Gravity");
+    display.drawFastHLine(0,10,83,BLACK);
+    display.setCursor(0, 15);
+   
+    if (menuitem==17) 
+    { 
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }
+    display.print(">Neptune");
+    display.setCursor(0, 25);
+   
+    if (menuitem==18) 
+    {
+      display.setTextColor(WHITE, BLACK);
+    }
+    else 
+    {
+      display.setTextColor(BLACK, WHITE);
+    }    
+    display.print(">Pluto ");
+    
+
+    
+  }
+
+  
   }
 
   void resetDefaults()
@@ -665,7 +1189,8 @@ unsigned long currentMillis = millis();
 
   display.clearDisplay();
   float reading = scale.get_units(10); //With scale.set_scale(226.626) - this gives accurate up to 1 deca gram (10 grams). 500 gram water bottle values are 50.07 to 50.32
-  float readinginGs = reading*10;
+  float gravityReading = reading*gravityMultiplier;
+  float readinginGs = gravityReading*10;
   //float readinginKGs = round(readinginGs/1000); 
   float readinginLBs = readinginGs/453.592;// 4545
  //Serial.print("reading in lbs= ");

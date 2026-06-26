@@ -1,0 +1,72 @@
+Old Menu lay out
+
+Page 1
+----Menu Item 1 = Contrast
+----Menu Item 2 = Unit
+----Menu Item 3 = Light Cutoff
+Page 2
+----Contrast value set
+Page 3
+----Unit value set
+Page 4
+----Light Cutoff Value set
+Page 5
+----Timeout Value set
+Page 6
+----Menu Item 4 = TimeoOut
+----Menu Item 5 = Reset
+----Menu Item 6 = Exit
+
+
+New Menu lay out
+
+Page 1
+----Menu Item 1 = Contrast
+----Menu Item 2 = Unit
+----Menu Item 3 = Light Cutoff
+Page 2
+----Contrast value set
+Page 3
+----Unit value set
+Page 4
+----Light Cutoff Value set
+Page 5
+----Timeout Value set
+Page 6
+----Menu Item 4 = TimeoOut
+----Menu Item 5 = Reset
+----Menu Item 6 = Exit
+Page 7 
+----Menu Item 7 = Gravity
+Page 8
+----Menu Item 8 = Earth
+----Menu Item 9 = Sun
+----Menu Item 10 = Moon
+Page 9
+----Menu Item 11 = Mercury
+----Menu Item 12 = Venus
+----Menu Item 13 = Mars
+Page 10
+----Menu Item 14 = Jupiter
+----Menu Item 15 = Saturn
+----Menu Item 16 = Uranus
+Page 11
+----Menu Item 17 = Neptune
+----Menu Item 18 = Pluto
+
+
+
+Body	Multiple of Earth’s Gravity
+Sun		27.01
+Mercury	0.378
+Venus	0.91
+Earth	1 (defined)
+Moon	0.166
+Mars	0.377
+Jupiter	2.34
+Saturn	1.06
+Uranus	0.92
+Neptune	1.19
+Pluto	0.06
+
+https://sciencenotes.org/how-to-calculate-weight-on-other-planets/
