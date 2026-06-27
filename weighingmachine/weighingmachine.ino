@@ -290,7 +290,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
         page=1;    
     } 
-        if (3<menuitem<7)
+        if (menuitem > 3 && menuitem < 7)
     {
         page=6;    
     }      
@@ -304,15 +304,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=18;
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }     
@@ -327,15 +327,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=18;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }   
@@ -349,15 +349,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=18;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }   
@@ -371,15 +371,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=18;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }   
@@ -416,7 +416,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=1;
     }
-    if (7>menuitem>3)
+    if (menuitem > 3 && menuitem < 7)
     {
         page=6;    
     }
@@ -458,7 +458,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
         page=1;    
     }
-    if (3<menuitem<7)
+    if (menuitem > 3 && menuitem < 7)
     {
         page=6;    
     }
@@ -473,15 +473,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=8;
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }
@@ -497,15 +497,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=8;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }
@@ -521,15 +521,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=8;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-        if (16<menuitem<19)
+        if (menuitem > 16 && menuitem < 19)
     {
         page=11;    
     }
@@ -544,15 +544,15 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     {
       menuitem=8;
     }
-    if (11>menuitem>7)
+    if (menuitem > 7 && menuitem < 11)
     {
         page=8;    
     }
-    if (14>menuitem>10)
+    if (menuitem > 10 && menuitem < 14)
     {
         page=9;    
     }
-    if (13<menuitem<17)
+    if (menuitem > 13 && menuitem < 17)
     {
         page=10;    
     }
@@ -621,71 +621,83 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
       menuitem =1;
       return;
      }
-     else if (menuitem==7)
+     else if (page == 7 && menuitem == 7)
      {
       page = 8;
+      menuitem=8;
       }
-     else if (menuitem=8) //Earth
+     else if (menuitem==8) //Earth
      {
       gravityMultiplier=1.0;
+      menuitem=7;
       page = 7;
       }  
 
-     else if (menuitem=9) //Sun
+     else if (menuitem==9) //Sun
      {
       gravityMultiplier=27.01;
+      menuitem=7;
       page = 7;
       }  
 
-     else if (menuitem=10) //Moon
+     else if (menuitem==10) //Moon
      {
       gravityMultiplier=0.166;
+      menuitem=7;
       page = 7;
       } 
 
-     else if (menuitem=11) //Mercury
+     else if (menuitem==11) //Mercury
      {
       gravityMultiplier=0.378;
+      menuitem=7;
       page = 7;
       }   
 
-     else if (menuitem=12) //Venus
+     else if (menuitem==12) //Venus
      {
       gravityMultiplier=0.91;
+      menuitem=7;
       page = 7;
       }  
 
-      else if (menuitem=13) //Mars
+      else if (menuitem==13) //Mars
      {
       gravityMultiplier=0.377;
+      menuitem=7;
       page = 7;
       } 
 
-     else if (menuitem=14) //Jupiter
+     else if (menuitem==14) //Jupiter
      {
       gravityMultiplier=2.34;
+      menuitem=7;
       page = 7;
       } 
-     else if (menuitem=15) //Saturn
+     else if (menuitem==15) //Saturn
      {
       gravityMultiplier=1.06;
+      menuitem=7;
       page = 7;
       } 
-     else if (menuitem=16) //Uranus
+     else if (menuitem==16) //Uranus
      {
       gravityMultiplier=0.92;
+      menuitem=7;
       page = 7;
       } 
 
-     else if (menuitem=17) //Neptune
+     else if (menuitem==17) //Neptune
      {
       gravityMultiplier=1.19;
+      menuitem=7;
       page = 7;
       } 
 
-     else if (menuitem=18)//Pluto
+     else if (menuitem==18)//Pluto
      {
       gravityMultiplier=0.06;
+      menuitem=7;
       page = 7;
       } 
     else if ((page == 2)|(page == 3)|(page ==4)) 
@@ -877,7 +889,6 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
 
     if (page==7) 
   {  
-     
     display.setTextSize(1);
     display.clearDisplay();
     display.setTextColor(BLACK, WHITE);
@@ -896,6 +907,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     }
     display.print(">Gravity");
     display.setCursor(0, 25);
+    display.display();
    
   }
 
@@ -1070,6 +1082,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     }
     display.print(">Neptune");
     display.setCursor(0, 25);
+    
    
     if (menuitem==18) 
     {
@@ -1080,7 +1093,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
       display.setTextColor(BLACK, WHITE);
     }    
     display.print(">Pluto ");
-    
+    display.display();
 
     
   }
@@ -1095,6 +1108,7 @@ Page 1 = Main menu,Menu Item 1 = Contrast, Page 2 = Contrast value
     contrast = 65;
     timeoutinterval = 150000;
     delayMicroseconds(4000000);
+    gravityMultiplier=1.0;
     scale.tare(); //Re-zero the scale;
     } 
   void setContrast()
@@ -1196,13 +1210,15 @@ unsigned long currentMillis = millis();
  //Serial.print("reading in lbs= ");
  //Serial.println(readinginLBs);
   if (unitoptionlbs){
-  int intermediatevalueholder = (int) (round(readinginLBs*10)); //155.83 becomes  1558 
-  int leftofdecimal = intermediatevalueholder/10; //1558 becomes 155
+  int32_t intermediatevalueholder = (int32_t) (round(readinginLBs*10)); //155.83 becomes  1558 
+  int32_t leftofdecimal = intermediatevalueholder/10; //1558 becomes 155
  // Serial.println(leftofdecimal);
-  int rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
+  int32_t rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
   // Serial.println(rightofdecimal);
+  
   display.setFont(&FreeSansBold12pt7b);
-  display.setTextSize(2);
+  if (gravityMultiplier>2.0){display.setTextSize(1);}
+  else {display.setTextSize(2);}
   display.setTextColor(BLACK);
   display.setCursor(0,32);
   display.print(leftofdecimal);
@@ -1215,13 +1231,14 @@ unsigned long currentMillis = millis();
     display.print("lbs");
     }
     else {
-  int intermediatevalueholder = (int) (round(readinginGs/100)); //70992.87 becomes  710
-  int leftofdecimal = intermediatevalueholder/10; //71
+  int32_t intermediatevalueholder = (int32_t) (round(readinginGs/100)); //70992.87 becomes  710
+  int32_t leftofdecimal = intermediatevalueholder/10; //71
   //Serial.println(leftofdecimal);
-  int rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
+  int32_t rightofdecimal = (intermediatevalueholder)-(leftofdecimal*10);
   //Serial.println(rightofdecimal);
   display.setFont(&FreeSansBold12pt7b);
-  display.setTextSize(2);
+if (gravityMultiplier>2.0){display.setTextSize(1);}
+  else {display.setTextSize(2);}
   display.setTextColor(BLACK);
   display.setCursor(0,32);
   display.print(leftofdecimal);
